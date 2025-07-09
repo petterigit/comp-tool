@@ -65,7 +65,9 @@
 		<p class="px-3 py-1 rounded border-2 border-slate-400 bg-slate-700">
 			Comp {index + 1}
 		</p>
-		<div class="flex flex-row flex-wrap gap-4 h-24">
+		<div
+			class="flex flex-row flex-wrap gap-4 h-max p-8 border-2 bg-slate-900 rounded-md border-slate-400"
+		>
 			{#each [...new Array(roles.tank - comp.tank.length)]}
 				<EmptySpecDisplay />
 			{/each}

@@ -1,1 +1,20 @@
 @import 'tailwindcss';
+
+@theme {
+	--color-deathknight: #c41e3a;
+	--color-demonhunter: #a330c9;
+	--color-druid: #ff7d0a;
+	--color-evoker: #33937f;
+	--color-hunter: #aad372;
+	--color-mage: #3fc7eb;
+	--color-monk: #00ff98;
+	--color-paladin: #f48cba;
+	--color-priest: #ffffff;
+	--color-rogue: #fff468;
+	--color-shaman: #0070dd;
+	--color-warlock: #8788ee;
+	--color-warrior: #c69b6d;
+}
+
+@source inline("outline-{deathknight,druid,demonhunter,evoker,hunter,mage,monk,paladin,priest,rogue,shaman,warlock,warrior}");
+@source inline("border-{deathknight,druid,demonhunter,evoker,hunter,mage,monk,paladin,priest,rogue,shaman,warlock,warrior}");

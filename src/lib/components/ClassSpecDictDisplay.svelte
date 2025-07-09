@@ -17,7 +17,7 @@
 
 <div class="flex flex-row gap-4 flex-wrap">
 	{#each Object.entries(classSpecDict).filter((classSpec) => classSpec[1].length >= 1) as classSpec}
-		<div class="flex flex-row gap-1">
+		<div class="flex flex-row gap-1 p-2 border-2 bg-slate-900 rounded-md border-{classSpec[0]}">
 			{#each Object.values(classSpec[1]) as spec}
 				<button
 					{disabled}
