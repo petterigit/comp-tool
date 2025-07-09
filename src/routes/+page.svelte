@@ -19,7 +19,14 @@
 		dps: []
 	};
 
-	let comps = $state<Comp[]>(loadCompsFromStorage() ?? [{ ...compInit }]);
+	let comps = $state<Comp[]>([{ ...compInit }]);
+
+	$effect(() => {
+		const stored = loadCompsFromStorage();
+		if (stored) {
+			comps = stored;
+		}
+	});
 
 	$effect(() => saveCompsToStorage(comps));
 
