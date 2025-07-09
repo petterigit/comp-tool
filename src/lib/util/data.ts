@@ -1,4 +1,4 @@
-import type { ClassSpecDict } from './types';
+import type { ClassSpecDict, Role } from './types';
 
 export const classes: ClassSpecDict = {
 	deathknight: ['blood', 'frost', 'unholy'],
@@ -63,3 +63,5 @@ export const dps: ClassSpecDict = {
 	warlock: ['affliction', 'demonology', 'destruction'],
 	warrior: ['arms', 'fury']
 };
+
+export const roleOrder: Record<Role, number> = { tank: 0, healer: 1, dps: 2 };
