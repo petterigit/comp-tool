@@ -65,3 +65,10 @@ export const dps: ClassSpecDict = {
 };
 
 export const roleOrder: Record<Role, number> = { tank: 0, healer: 1, dps: 2 };
+
+export const roles = {
+	tank: 1,
+	healer: 1,
+	dps: 3
+};
+export const rolesTotal = Object.values(roles).reduce((acc, role) => acc + role, 0);

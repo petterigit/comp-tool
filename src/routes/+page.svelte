@@ -2,8 +2,10 @@
 	import ClassPicker from '$lib/components/ClassPicker.svelte';
 	import EmptySpecDisplay from '$lib/components/EmptySpecDisplay.svelte';
 	import SpecDisplay from '$lib/components/SpecDisplay.svelte';
+	import { roles, rolesTotal } from '$lib/util/data';
 	import { sortByClassSpec } from '$lib/util/sort';
 	import type { Class, ClassSpec, ClassSpecRole, Role, Spec } from '$lib/util/types';
+	import clsx from 'clsx';
 
 	const compInit = {
 		tank: [],
@@ -11,62 +13,93 @@
 		dps: []
 	};
 
-	let comp = $state<{ tank: ClassSpec[]; healer: ClassSpec[]; dps: ClassSpec[] }>(compInit);
+	let comps = $state<{ tank: ClassSpec[]; healer: ClassSpec[]; dps: ClassSpec[] }[]>([
+		{ ...compInit }
+	]);
 
 	let pickSpec = (className: Class, spec: Spec, role: Role) => {
-		comp = { ...comp, [role]: [...comp[role], [className, spec]] };
+		const comp = currentComp;
+		comps[currentCompIndex][role] = [...comp[role], [className, spec]];
+
+		if (comp.tank.length + comp.healer.length + comp.dps.length === rolesTotal) {
+			comps = [...comps, { ...compInit }];
+		}
 	};
 
-	const reset = () => {
-		comp = compInit;
+	const removeComp = (index: number) => () => {
+		if (index === comps.length - 1) {
+			comps[index] = compInit;
+			return;
+		}
+
+		comps.splice(index, 1);
+		return;
 	};
 
-	let changesMade = $derived(comp.tank.length + comp.healer.length + comp.dps.length >= 1);
+	const isEmptyComp = (index: number) => {
+		return (
+			comps[index].tank.length === 0 &&
+			comps[index].healer.length === 0 &&
+			comps[index].dps.length === 0
+		);
+	};
 
-	let tanks = $derived([...comp.tank].sort(sortByClassSpec));
-	let healers = $derived([...comp.healer].sort(sortByClassSpec));
-	let dps = $derived([...comp.dps].sort(sortByClassSpec));
+	const currentCompIndex = $derived(comps.length - 1);
+
+	const currentComp = $derived(comps[currentCompIndex]);
 </script>
 
 <div
 	class="w-screen h-screen overflow-hidden flex flex-col justify-center items-center gap-4 bg-slate-800 text-white"
 >
 	<ClassPicker
-		rolesPicked={{ tank: comp.tank.length, healer: comp.healer.length, dps: comp.dps.length }}
+		rolesPicked={{
+			tank: currentComp.tank.length,
+			healer: currentComp.healer.length,
+			dps: currentComp.dps.length
+		}}
 		{pickSpec}
 	/>
 
-	<div class="flex flex-row flex-wrap gap-4 h-24">
-		{#each tanks as spec}
-			{#if tanks.length === 0}
+	{#each comps as comp, index}
+		<p class="px-3 py-1 rounded border-2 border-slate-400 bg-slate-700">
+			Comp {index + 1}
+		</p>
+		<div class="flex flex-row flex-wrap gap-4 h-24">
+			{#each [...new Array(roles.tank - comp.tank.length)]}
 				<EmptySpecDisplay />
-			{:else}
+			{/each}
+			{#each [...comp.tank].sort(sortByClassSpec) as spec}
 				<SpecDisplay className={spec[0]} spec={spec[1]} />
-			{/if}
-		{/each}
+			{/each}
 
-		{#each healers as spec}
-			{#if healers.length === 0}
+			{#each [...new Array(roles.healer - comp.healer.length)]}
 				<EmptySpecDisplay />
-			{:else}
+			{/each}
+			{#each [...comp.healer].sort(sortByClassSpec) as spec}
 				<SpecDisplay className={spec[0]} spec={spec[1]} />
-			{/if}
-		{/each}
+			{/each}
 
-		{#each dps as spec}
-			{#if dps.length === 0}
+			{#each [...new Array(roles.dps - comp.dps.length)]}
 				<EmptySpecDisplay />
-			{:else}
+			{/each}
+
+			{#each [...comp.dps].sort(sortByClassSpec) as spec}
 				<SpecDisplay className={spec[0]} spec={spec[1]} />
-			{/if}
-		{/each}
-		{#if changesMade}
+			{/each}
+
 			<button
-				onclick={reset}
-				class="w-48 cursor-pointer border-2 border-slate-400 rounded-sm p-2 hover:bg-slate-700"
+				disabled={isEmptyComp(index)}
+				onclick={removeComp(index)}
+				class={clsx(
+					'w-48 border-2',
+					!isEmptyComp(index)
+						? 'border-slate-400 cursor-pointer  rounded-sm p-2 hover:bg-slate-700" '
+						: 'border-slate-400 rounded-sm p-2 hover:bg-slate-700" cursor-not-allowed'
+				)}
 			>
-				Reset
+				Remove
 			</button>
-		{/if}
-	</div>
+		</div>
+	{/each}
 </div>
