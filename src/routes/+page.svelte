@@ -4,8 +4,14 @@
 	import SpecDisplay from '$lib/components/SpecDisplay.svelte';
 	import { roles, rolesTotal } from '$lib/util/data';
 	import { sortByClassSpec } from '$lib/util/sort';
-	import type { Class, ClassSpec, ClassSpecRole, Role, Spec } from '$lib/util/types';
+	import type { Class, Comp, Role, Spec } from '$lib/util/types';
 	import clsx from 'clsx';
+	import {
+		exportCompsToFile,
+		importCompsFromFile,
+		saveCompsToStorage,
+		loadCompsFromStorage
+	} from '$lib/util/comps';
 
 	const compInit = {
 		tank: [],
@@ -13,9 +19,9 @@
 		dps: []
 	};
 
-	let comps = $state<{ tank: ClassSpec[]; healer: ClassSpec[]; dps: ClassSpec[] }[]>([
-		{ ...compInit }
-	]);
+	let comps = $state<Comp[]>(loadCompsFromStorage() ?? [{ ...compInit }]);
+
+	$effect(() => saveCompsToStorage(comps));
 
 	let pickSpec = (className: Class, spec: Spec, role: Role) => {
 		const comp = currentComp;
@@ -47,11 +53,39 @@
 	const currentCompIndex = $derived(comps.length - 1);
 
 	const currentComp = $derived(comps[currentCompIndex]);
+
+	function exportComps() {
+		exportCompsToFile(comps);
+	}
+
+	async function importComps(event: Event) {
+		const imported = await importCompsFromFile(event, compInit);
+		if (!imported) {
+			alert('Could not import comps. Check if your file is correct.');
+			return;
+		}
+		comps = imported;
+	}
 </script>
 
 <div
 	class="w-screen h-screen overflow-hidden flex flex-col justify-center items-center gap-4 bg-slate-800 text-white"
 >
+	<div class="flex gap-2">
+		<button
+			class="border-2 border-slate-400 rounded-sm p-2 bg-slate-700 hover:bg-slate-600"
+			onclick={exportComps}
+		>
+			Export Comps
+		</button>
+		<label
+			class="border-2 border-slate-400 rounded-sm p-2 bg-slate-700 hover:bg-slate-600 cursor-pointer"
+		>
+			Import Comps
+			<input type="file" accept="application/json" onchange={importComps} style="display:none" />
+		</label>
+	</div>
+
 	<ClassPicker
 		rolesPicked={{
 			tank: currentComp.tank.length,
@@ -61,47 +95,49 @@
 		{pickSpec}
 	/>
 
-	{#each comps as comp, index}
-		<p class="px-3 py-1 rounded border-2 border-slate-400 bg-slate-700">
-			Comp {index + 1}
-		</p>
-		<div
-			class="flex flex-row flex-wrap gap-4 h-max p-8 border-2 bg-slate-900 rounded-md border-slate-400"
-		>
-			{#each [...new Array(roles.tank - comp.tank.length)]}
-				<EmptySpecDisplay />
-			{/each}
-			{#each [...comp.tank].sort(sortByClassSpec) as spec}
-				<SpecDisplay className={spec[0]} spec={spec[1]} />
-			{/each}
+	<div class="flex flex-col gap-8 overflow-auto w-full items-center">
+		{#each comps as comp, index}
+			<div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400">
+				<p class="text-center rounded font-semibold">
+					Comp {index + 1}
+				</p>
+				<div class="flex flex-row flex-wrap gap-4 h-max p-8">
+					{#each [...new Array(roles.tank - comp.tank.length)]}
+						<EmptySpecDisplay />
+					{/each}
+					{#each [...comp.tank].sort(sortByClassSpec) as spec}
+						<SpecDisplay className={spec[0]} spec={spec[1]} />
+					{/each}
 
-			{#each [...new Array(roles.healer - comp.healer.length)]}
-				<EmptySpecDisplay />
-			{/each}
-			{#each [...comp.healer].sort(sortByClassSpec) as spec}
-				<SpecDisplay className={spec[0]} spec={spec[1]} />
-			{/each}
+					{#each [...new Array(roles.healer - comp.healer.length)]}
+						<EmptySpecDisplay />
+					{/each}
+					{#each [...comp.healer].sort(sortByClassSpec) as spec}
+						<SpecDisplay className={spec[0]} spec={spec[1]} />
+					{/each}
 
-			{#each [...new Array(roles.dps - comp.dps.length)]}
-				<EmptySpecDisplay />
-			{/each}
+					{#each [...new Array(roles.dps - comp.dps.length)]}
+						<EmptySpecDisplay />
+					{/each}
 
-			{#each [...comp.dps].sort(sortByClassSpec) as spec}
-				<SpecDisplay className={spec[0]} spec={spec[1]} />
-			{/each}
+					{#each [...comp.dps].sort(sortByClassSpec) as spec}
+						<SpecDisplay className={spec[0]} spec={spec[1]} />
+					{/each}
 
-			<button
-				disabled={isEmptyComp(index)}
-				onclick={removeComp(index)}
-				class={clsx(
-					'w-48 border-2',
-					!isEmptyComp(index)
-						? 'border-slate-400 cursor-pointer  rounded-sm p-2 hover:bg-slate-700" '
-						: 'border-slate-400 rounded-sm p-2 hover:bg-slate-700" cursor-not-allowed'
-				)}
-			>
-				Remove
-			</button>
-		</div>
-	{/each}
+					<button
+						disabled={isEmptyComp(index)}
+						onclick={removeComp(index)}
+						class={clsx(
+							'w-48 border-2',
+							!isEmptyComp(index)
+								? 'border-slate-400 cursor-pointer rounded-sm p-2 hover:bg-slate-700'
+								: 'border-slate-400 rounded-sm p-2 hover:bg-slate-700 cursor-not-allowed'
+						)}
+					>
+						Remove
+					</button>
+				</div>
+			</div>
+		{/each}
+	</div>
 </div>

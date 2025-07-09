@@ -59,3 +59,5 @@ export type ClassSpecDict = {
 
 export type ClassSpec = [Class, Spec];
 export type ClassSpecRole = [Class, Spec, Role];
+
+export type Comp = { tank: ClassSpec[]; healer: ClassSpec[]; dps: ClassSpec[] };
