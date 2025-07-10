@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { roles } from '$lib/util/data';
+	import {
+		compToMeleeRangedHealer,
+		compToPhysicalMagicHybrid,
+		compToRoles,
+		roles
+	} from '$lib/util/data';
 	import { sortByClassSpec } from '$lib/util/sort';
 	import type { Comp } from '$lib/util/types';
 	import clsx from 'clsx';
@@ -9,7 +14,10 @@
 
 	const { comp, removeComp, name }: { comp: Comp; removeComp: () => void; name: string } = $props();
 
-	const isEmptyComp = $derived(comp.tank.length + comp.healer.length + comp.dps.length === 0);
+	const isEmptyComp = $derived(comp.length === 0);
+	const compRoles = $derived(compToRoles(comp));
+	const compMeleeRangedHealer = $derived(compToMeleeRangedHealer(comp));
+	const compPhysicalMagicHybrid = $derived(compToPhysicalMagicHybrid(comp));
 </script>
 
 <div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400">
@@ -17,25 +25,25 @@
 		{name}
 	</p>
 	<div class="flex flex-row flex-wrap gap-4 h-max p-8">
-		{#each [...new Array(roles.tank - comp.tank.length)]}
+		{#each [...new Array(roles.tank - compRoles.tank.length)]}
 			<EmptySpecDisplay />
 		{/each}
-		{#each [...comp.tank].sort(sortByClassSpec) as spec}
+		{#each [...compRoles.tank].sort(sortByClassSpec) as spec}
 			<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
 		{/each}
 
-		{#each [...new Array(roles.healer - comp.healer.length)]}
+		{#each [...new Array(roles.healer - compRoles.healer.length)]}
 			<EmptySpecDisplay />
 		{/each}
-		{#each [...comp.healer].sort(sortByClassSpec) as spec}
+		{#each [...compRoles.healer].sort(sortByClassSpec) as spec}
 			<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
 		{/each}
 
-		{#each [...new Array(roles.dps - comp.dps.length)]}
+		{#each [...new Array(roles.dps - compRoles.dps.length)]}
 			<EmptySpecDisplay />
 		{/each}
 
-		{#each [...comp.dps].sort(sortByClassSpec) as spec}
+		{#each [...compRoles.dps].sort(sortByClassSpec) as spec}
 			<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
 		{/each}
 
@@ -63,7 +71,7 @@
 			]}
 		>
 			<p>
-				{comp.tank.length} Tanks, {comp.healer.length} Healers, {comp.dps.length} DPS
+				{compRoles.tank.length} Tanks, {compRoles.healer.length} Healers, {compRoles.dps.length} DPS
 			</p>
 		</ClassPopover>
 		<ClassPopover
@@ -73,7 +81,10 @@
 				['druid', 'guardian']
 			]}
 		>
-			<p>4 Melee, 1 Ranged</p>
+			<p>
+				{compMeleeRangedHealer.melee.length} Melee, {compMeleeRangedHealer.ranged.length} Ranged ({compMeleeRangedHealer
+					.healer.length} Healer)
+			</p>
 		</ClassPopover>
 		<ClassPopover
 			specs={[
@@ -82,7 +93,11 @@
 				['druid', 'guardian']
 			]}
 		>
-			<p>3 Physical, 1 Magical, 1 Hybrid</p>
+			<p>
+				{compPhysicalMagicHybrid.physical.length} Physical, {compPhysicalMagicHybrid.hybrid.length} Hybrid,
+				{compPhysicalMagicHybrid.magic.length}
+				Magic
+			</p>
 		</ClassPopover>
 	</div>
 </div>

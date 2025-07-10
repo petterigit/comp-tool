@@ -1,4 +1,4 @@
-import type { ClassSpecDict, Role } from './types';
+import type { ClassSpecDict, Comp, Role } from './types';
 
 export const classes: ClassSpecDict = {
 	deathknight: ['blood', 'frost', 'unholy'],
@@ -71,4 +71,52 @@ export const roles = {
 	healer: 1,
 	dps: 3
 };
-export const rolesTotal = Object.values(roles).reduce((acc, role) => acc + role, 0);
+export const compTotalCharacters = Object.values(roles).reduce((acc, role) => acc + role, 0);
+
+export const isCompFull = (comp: Comp) => {
+	return comp.length >= compTotalCharacters;
+};
+
+export const compToRoles = (comp: Comp) => {
+	console.log(comp);
+	return {
+		tank: comp.filter((spec) => tanks[spec[0]].includes(spec[1])),
+		healer: comp.filter((spec) => healers[spec[0]].includes(spec[1])),
+		dps: comp.filter((spec) => dps[spec[0]].includes(spec[1]))
+	};
+};
+
+export const compToMeleeRangedHealer = (comp: Comp) => {
+	return {
+		melee: comp.filter((spec) =>
+			['deathknight', 'demonhunter', 'druid', 'monk', 'paladin', 'rogue', 'warrior'].includes(
+				spec[0]
+			)
+		),
+		ranged: comp.filter((spec) =>
+			['hunter', 'mage', 'priest', 'shaman', 'warlock'].includes(spec[0])
+		),
+		healer: comp.filter((spec) =>
+			['evoker', 'druid', 'monk', 'paladin', 'priest', 'shaman'].includes(spec[0])
+		)
+	};
+};
+
+export const compToPhysicalMagicHybrid = (comp: Comp) => {
+	return {
+		physical: comp.filter((spec) =>
+			[
+				'deathknight',
+				'demonhunter',
+				'druid',
+				'hunter',
+				'monk',
+				'paladin',
+				'rogue',
+				'warrior'
+			].includes(spec[0])
+		),
+		magic: comp.filter((spec) => ['mage', 'priest', 'warlock', 'evoker'].includes(spec[0])),
+		hybrid: comp.filter((spec) => ['shaman'].includes(spec[0]))
+	};
+};

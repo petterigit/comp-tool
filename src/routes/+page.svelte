@@ -1,11 +1,14 @@
 <script lang="ts">
 	import ClassPicker from '$lib/components/ClassPicker.svelte';
-	import EmptySpecDisplay from '$lib/components/EmptySpecDisplay.svelte';
-	import SpecDisplay from '$lib/components/SpecDisplay.svelte';
-	import { roles, rolesTotal } from '$lib/util/data';
-	import { sortByClassSpec } from '$lib/util/sort';
-	import type { Class, Comp as CompType, Role, Spec } from '$lib/util/types';
-	import clsx from 'clsx';
+
+	import { compToRoles, compTotalCharacters, isCompFull } from '$lib/util/data';
+	import {
+		type CompRoles,
+		type Class,
+		type Comp as CompType,
+		type Role,
+		type Spec
+	} from '$lib/util/types';
 	import {
 		exportCompsToFile,
 		importCompsFromFile,
@@ -13,16 +16,14 @@
 		loadCompsFromStorage
 	} from '$lib/util/comps';
 	import Comp from '$lib/components/Comp.svelte';
+	import { onMount } from 'svelte';
 
-	const compInit = {
-		tank: [],
-		healer: [],
-		dps: []
-	};
+	let comps = $state<CompType[]>([[]]);
+	const currentCompIndex = $derived(comps.length - 1);
+	const currentComp = $derived(comps[currentCompIndex]);
+	const currentCompRoles = $derived(compToRoles(currentComp));
 
-	let comps = $state<CompType[]>([{ ...compInit }]);
-
-	$effect(() => {
+	onMount(() => {
 		const stored = loadCompsFromStorage();
 		if (stored) {
 			comps = stored;
@@ -31,18 +32,17 @@
 
 	$effect(() => saveCompsToStorage(comps));
 
-	let pickSpec = (className: Class, spec: Spec, role: Role) => {
-		const comp = currentComp;
-		comps[currentCompIndex][role] = [...comp[role], [className, spec]];
+	let pickSpec = (className: Class, spec: Spec) => {
+		comps[currentCompIndex] = [...currentComp, [className, spec]];
 
-		if (comp.tank.length + comp.healer.length + comp.dps.length === rolesTotal) {
-			comps = [...comps, { ...compInit }];
+		if (isCompFull(currentComp)) {
+			comps = [...comps, []];
 		}
 	};
 
 	const removeComp = (index: number) => () => {
 		if (index === comps.length - 1) {
-			comps[index] = compInit;
+			comps[index] = [];
 			return;
 		}
 
@@ -50,16 +50,12 @@
 		return;
 	};
 
-	const currentCompIndex = $derived(comps.length - 1);
-
-	const currentComp = $derived(comps[currentCompIndex]);
-
 	function exportComps() {
 		exportCompsToFile(comps);
 	}
 
 	async function importComps(event: Event) {
-		const imported = await importCompsFromFile(event, compInit);
+		const imported = await importCompsFromFile(event, []);
 		if (!imported) {
 			alert('Could not import comps. Check if your file is correct.');
 			return;
@@ -88,9 +84,9 @@
 
 	<ClassPicker
 		rolesPicked={{
-			tank: currentComp.tank.length,
-			healer: currentComp.healer.length,
-			dps: currentComp.dps.length
+			tank: currentCompRoles.tank.length,
+			healer: currentCompRoles.healer.length,
+			dps: currentCompRoles.dps.length
 		}}
 		{pickSpec}
 	/>

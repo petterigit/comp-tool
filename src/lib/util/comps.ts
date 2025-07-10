@@ -1,17 +1,16 @@
-import { rolesTotal } from './data';
+import { compTotalCharacters } from './data';
 import type { Comp } from './types';
 
 export const COMPS_STORAGE_KEY = 'comps-tool-comps';
 
 export function filterNonEmptyComps(comps: Comp[]) {
-	return comps.filter((comp) => comp.tank.length + comp.healer.length + comp.dps.length > 0);
+	return comps.filter((comp) => comp.length > 0);
 }
 
-export function shouldAddEmptyComp(comps: Comp[], rolesTotal: number) {
+export function shouldAddEmptyComp(comps: Comp[]) {
 	if (comps.length === 0) return true;
 	const last = comps[comps.length - 1];
-	const lastCount = last.tank.length + last.healer.length + last.dps.length;
-	const lastCompIsFull = lastCount === rolesTotal;
+	const lastCompIsFull = last.length === compTotalCharacters;
 	return lastCompIsFull;
 }
 
@@ -40,8 +39,8 @@ export function importCompsFromFile(event: Event, compInit: Comp) {
 				const imported = JSON.parse(e.target?.result as string);
 				if (Array.isArray(imported)) {
 					let newComps = imported;
-					if (shouldAddEmptyComp(newComps, rolesTotal)) {
-						newComps = [...newComps, { ...compInit }];
+					if (shouldAddEmptyComp(newComps)) {
+						newComps = [...newComps, compInit];
 					}
 					resolve(newComps);
 					return;
