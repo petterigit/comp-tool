@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Class, ClassSpecDict, Role, Spec } from '$lib/util/types';
 	import clsx from 'clsx';
+	import SpecDisplay from './SpecDisplay.svelte';
 
 	let {
 		classSpecDict,
@@ -17,22 +18,19 @@
 
 <div class="flex flex-row gap-4 flex-wrap">
 	{#each Object.entries(classSpecDict).filter((classSpec) => classSpec[1].length >= 1) as classSpec}
-		<div class="flex flex-row gap-1 p-2 border-2 bg-slate-900 rounded-md border-{classSpec[0]}">
+		<div class="flex flex-row border-2 bg-slate-900 rounded-md border-{classSpec[0]}">
 			{#each Object.values(classSpec[1]) as spec}
 				<button
 					{disabled}
-					class={clsx(!disabled && 'cursor-pointer')}
+					class={clsx(
+						'p-2',
+						!disabled &&
+							'cursor-pointer outline-slate-500 hover:brightness-150 hover:outline-slate-500',
+						disabled && 'outline-slate-700 brightness-50 '
+					)}
 					onclick={() => handleClick(classSpec[0] as Class, spec as Spec, role)}
 				>
-					<img
-						class={clsx(
-							'w-12 h-12 outline-[2px] outline-offset-[-2px]  rounded-xs',
-							!disabled && 'outline-slate-500 hover:brightness-150 hover:outline-slate-500',
-							disabled && 'outline-slate-700 brightness-50 '
-						)}
-						src={`icons/spec/${classSpec[0]}/${spec}.jpg`}
-						alt={`${classSpec[0]} ${spec}`}
-					/>
+					<SpecDisplay hideClassBorder className={classSpec[0] as Class} {spec} />
 				</button>
 			{/each}
 		</div>

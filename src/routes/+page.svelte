@@ -4,7 +4,7 @@
 	import SpecDisplay from '$lib/components/SpecDisplay.svelte';
 	import { roles, rolesTotal } from '$lib/util/data';
 	import { sortByClassSpec } from '$lib/util/sort';
-	import type { Class, Comp, Role, Spec } from '$lib/util/types';
+	import type { Class, Comp as CompType, Role, Spec } from '$lib/util/types';
 	import clsx from 'clsx';
 	import {
 		exportCompsToFile,
@@ -12,6 +12,7 @@
 		saveCompsToStorage,
 		loadCompsFromStorage
 	} from '$lib/util/comps';
+	import Comp from '$lib/components/Comp.svelte';
 
 	const compInit = {
 		tank: [],
@@ -19,7 +20,7 @@
 		dps: []
 	};
 
-	let comps = $state<Comp[]>([{ ...compInit }]);
+	let comps = $state<CompType[]>([{ ...compInit }]);
 
 	$effect(() => {
 		const stored = loadCompsFromStorage();
@@ -47,14 +48,6 @@
 
 		comps.splice(index, 1);
 		return;
-	};
-
-	const isEmptyComp = (index: number) => {
-		return (
-			comps[index].tank.length === 0 &&
-			comps[index].healer.length === 0 &&
-			comps[index].dps.length === 0
-		);
 	};
 
 	const currentCompIndex = $derived(comps.length - 1);
@@ -104,47 +97,7 @@
 
 	<div class="flex flex-col gap-8 overflow-auto w-full items-center">
 		{#each comps as comp, index}
-			<div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400">
-				<p class="text-center rounded font-semibold">
-					Comp {index + 1}
-				</p>
-				<div class="flex flex-row flex-wrap gap-4 h-max p-8">
-					{#each [...new Array(roles.tank - comp.tank.length)]}
-						<EmptySpecDisplay />
-					{/each}
-					{#each [...comp.tank].sort(sortByClassSpec) as spec}
-						<SpecDisplay className={spec[0]} spec={spec[1]} />
-					{/each}
-
-					{#each [...new Array(roles.healer - comp.healer.length)]}
-						<EmptySpecDisplay />
-					{/each}
-					{#each [...comp.healer].sort(sortByClassSpec) as spec}
-						<SpecDisplay className={spec[0]} spec={spec[1]} />
-					{/each}
-
-					{#each [...new Array(roles.dps - comp.dps.length)]}
-						<EmptySpecDisplay />
-					{/each}
-
-					{#each [...comp.dps].sort(sortByClassSpec) as spec}
-						<SpecDisplay className={spec[0]} spec={spec[1]} />
-					{/each}
-
-					<button
-						disabled={isEmptyComp(index)}
-						onclick={removeComp(index)}
-						class={clsx(
-							'w-48 border-2',
-							!isEmptyComp(index)
-								? 'border-slate-400 cursor-pointer rounded-sm p-2 hover:bg-slate-700'
-								: 'border-slate-400 rounded-sm p-2 hover:bg-slate-700 cursor-not-allowed'
-						)}
-					>
-						Remove
-					</button>
-				</div>
-			</div>
+			<Comp {comp} removeComp={removeComp(index)} name={`Comp ${index + 1}`} />
 		{/each}
 	</div>
 </div>
