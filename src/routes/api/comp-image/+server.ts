@@ -1,4 +1,4 @@
-import { createCanvas, loadImage } from 'canvas';
+import { createCanvas, loadImage } from '@napi-rs/canvas';
 import type { RequestHandler } from '@sveltejs/kit';
 import { classColors, compToRoles, decodeComp } from '$lib/util/data';
 import { sortByClassSpec } from '$lib/util/sort';
