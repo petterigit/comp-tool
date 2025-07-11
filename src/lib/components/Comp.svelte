@@ -3,6 +3,7 @@
 		compToMeleeRangedHealer,
 		compToPhysicalMagicHybrid,
 		compToRoles,
+		encodeComp,
 		roles
 	} from '$lib/util/data';
 	import { sortByClassSpec } from '$lib/util/sort';
@@ -23,6 +24,16 @@
 <div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400">
 	<p class="text-center rounded font-semibold">
 		{name}
+	</p>
+	<p>
+		<a
+			href={`/comps/${encodeComp(comp)}`}
+			class="w-48 border-2 border-slate-400 rounded-sm p-2 hover:bg-slate-700 text-center mt-2"
+			aria-label="Shareable comp link"
+			target="_blank"
+		>
+			Comp permalink (share)
+		</a>
 	</p>
 	<div class="flex flex-row flex-wrap gap-4 h-max p-8">
 		{#each [...new Array(roles.tank - compRoles.tank.length)]}

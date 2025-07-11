@@ -64,36 +64,32 @@
 	}
 </script>
 
-<div
-	class="w-screen h-screen overflow-hidden flex flex-col justify-center items-center gap-4 bg-slate-800 text-white"
->
-	<div class="flex gap-2">
-		<button
-			class="border-2 border-slate-400 rounded-sm p-2 bg-slate-700 hover:bg-slate-600"
-			onclick={exportComps}
-		>
-			Export Comps
-		</button>
-		<label
-			class="border-2 border-slate-400 rounded-sm p-2 bg-slate-700 hover:bg-slate-600 cursor-pointer"
-		>
-			Import Comps
-			<input type="file" accept="application/json" onchange={importComps} style="display:none" />
-		</label>
-	</div>
+<div class="flex gap-2">
+	<button
+		class="border-2 border-slate-400 rounded-sm p-2 bg-slate-700 hover:bg-slate-600"
+		onclick={exportComps}
+	>
+		Export Comps
+	</button>
+	<label
+		class="border-2 border-slate-400 rounded-sm p-2 bg-slate-700 hover:bg-slate-600 cursor-pointer"
+	>
+		Import Comps
+		<input type="file" accept="application/json" onchange={importComps} style="display:none" />
+	</label>
+</div>
 
-	<ClassPicker
-		rolesPicked={{
-			tank: currentCompRoles.tank.length,
-			healer: currentCompRoles.healer.length,
-			dps: currentCompRoles.dps.length
-		}}
-		{pickSpec}
-	/>
+<ClassPicker
+	rolesPicked={{
+		tank: currentCompRoles.tank.length,
+		healer: currentCompRoles.healer.length,
+		dps: currentCompRoles.dps.length
+	}}
+	{pickSpec}
+/>
 
-	<div class="flex flex-col gap-8 overflow-auto w-full items-center">
-		{#each comps as comp, index}
-			<Comp {comp} removeComp={removeComp(index)} name={`Comp ${index + 1}`} />
-		{/each}
-	</div>
+<div class="flex flex-col gap-8 overflow-auto w-full items-center">
+	{#each comps as comp, index}
+		<Comp {comp} removeComp={removeComp(index)} name={`Comp ${index + 1}`} />
+	{/each}
 </div>

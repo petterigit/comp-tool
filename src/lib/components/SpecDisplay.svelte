@@ -42,6 +42,6 @@
 		'rounded-xs',
 		!hideClassBorder ? `outline-${className}` : 'outline-black'
 	)}
-	src={`icons/spec/${className}/${spec}.jpg`}
+	src={`/icons/spec/${className}/${spec}.jpg`}
 	alt={spec}
 />
