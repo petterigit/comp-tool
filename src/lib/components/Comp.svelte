@@ -46,8 +46,8 @@
 	}
 </script>
 
-<div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400">
-	<div class="flex flex-row flex-wrap gap-4 h-max p-8">
+<div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400 p-8">
+	<div class="flex flex-row flex-wrap gap-4 h-max">
 		{#each [...new Array(roles.tank - compRoles.tank.length)]}
 			<EmptySpecDisplay />
 		{/each}
@@ -95,6 +95,7 @@
 			>Share comp (link)</Button
 		>
 	</div>
+	<!--
 	<div class="flex flex-col items-start p-2">
 		<p class="text-center rounded font-semibold">Comp in numbers</p>
 
@@ -135,4 +136,6 @@
 			</p>
 		</ClassPopover>
 	</div>
+	
+	-->
 </div>

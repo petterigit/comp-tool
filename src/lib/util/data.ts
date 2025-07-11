@@ -1,4 +1,4 @@
-import type { Class, ClassSpecDict, Comp, Role } from './types';
+import type { Class, ClassSpec, ClassSpecDict, ClassSpecRole, Comp, Role, Spec } from './types';
 
 export const classes: ClassSpecDict = {
 	deathknight: ['blood', 'frost', 'unholy'],
@@ -85,6 +85,21 @@ export const compToRoles = (comp: Comp) => {
 	};
 };
 
+export const classSpecToClassSpecRole = (classSpec: ClassSpec): ClassSpecRole => {
+	const role = getRole(classSpec);
+	if (!role) {
+		throw new Error('Could not convert class spec to class spec role');
+	}
+	return [...classSpec, role];
+};
+
+export const getRole = (spec: [Class, Spec]): Role | undefined => {
+	if (tanks[spec[0]].includes(spec[1])) return 'tank';
+	if (healers[spec[0]].includes(spec[1])) return 'healer';
+	if (dps[spec[0]].includes(spec[1])) return 'dps';
+	return undefined;
+};
+
 export const compToMeleeRangedHealer = (comp: Comp) => {
 	return {
 		melee: comp.filter((spec) =>
@@ -137,12 +152,17 @@ export function encodeComp(comp: Comp): string {
 		}
 	}
 	if (bits > 0) bytes.push((bitfield << (8 - bits)) & 0xff);
-	return btoa(String.fromCharCode(...bytes));
+	const base64 = btoa(String.fromCharCode(...bytes));
+	// Make URL-safe and remove padding
+	return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 export function decodeComp(str: string): Comp {
 	const classList = Object.keys(classes);
-	const bytes = Uint8Array.from(atob(str), (c) => c.charCodeAt(0));
+	// Restore base64
+	let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+	while (base64.length % 4) base64 += '=';
+	const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
 	let bitfield = 0;
 	let bits = 0;
 	const comp: Comp = [];
