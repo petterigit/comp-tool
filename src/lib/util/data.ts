@@ -161,3 +161,19 @@ export function decodeComp(str: string): Comp {
 	}
 	return comp;
 }
+
+export const classColors: { [key in Class]: string } = {
+	deathknight: '#c41e3a',
+	demonhunter: '#a330c9',
+	druid: '#ff7d0a',
+	evoker: '#33937f',
+	hunter: '#aad372',
+	mage: '#3fc7eb',
+	monk: '#00ff98',
+	paladin: '#f48cba',
+	priest: '#ffffff',
+	rogue: '#fff468',
+	shaman: '#0070dd',
+	warlock: '#8788ee',
+	warrior: '#c69b6d'
+};

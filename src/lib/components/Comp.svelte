@@ -19,12 +19,38 @@
 	const compRoles = $derived(compToRoles(comp));
 	const compMeleeRangedHealer = $derived(compToMeleeRangedHealer(comp));
 	const compPhysicalMagicHybrid = $derived(compToPhysicalMagicHybrid(comp));
+
+	async function getImage() {
+		console.log('Get Image');
+		const response = await fetch(`/api/comp-image?comp=${encodeComp(comp)}`);
+		console.log('Response:', response);
+		const compImage = await response;
+
+		// Copy comp image to clipboard
+		if (navigator.clipboard && compImage.ok) {
+			const blob = await compImage.blob();
+			await navigator.clipboard.write([
+				new ClipboardItem({
+					'image/png': blob
+				})
+			]);
+			alert('Comp image copied to clipboard!');
+		} else {
+			alert('Failed to get comp image.');
+		}
+	}
 </script>
 
 <div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400">
 	<p class="text-center rounded font-semibold">
 		{name}
 	</p>
+	<button
+		onclick={getImage}
+		class="w-48 border-2 border-slate-400 rounded-sm p-2 hover:bg-slate-700"
+	>
+		Get Image
+	</button>
 	<p>
 		<a
 			href={`/comps/${encodeComp(comp)}`}
