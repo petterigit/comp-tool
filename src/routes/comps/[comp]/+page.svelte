@@ -43,7 +43,6 @@
 	<meta property="twitter:image" content="{pageHost}/api/comp-image?comp={encodedComp}" />
 </svelte:head>
 
-<h1>Comp Details</h1>
 <div class="flex flex-row flex-wrap gap-4 h-max p-8">
 	{#each [...compRoles.tank] as spec}
 		<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />

@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	let x = padding;
 	const y = padding;
 
-	const borderRadius = 12;
+	const borderRadius = 6;
 	for (const [className, spec] of compSpecs) {
 		try {
 			const imgPath = `static/icons/spec/${className}/${spec}.jpg`;

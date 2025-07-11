@@ -12,8 +12,13 @@
 	import EmptySpecDisplay from './EmptySpecDisplay.svelte';
 	import SpecDisplay from './SpecDisplay.svelte';
 	import ClassPopover from './ClassPopover.svelte';
+	import Button from './ui/button/button.svelte';
 
-	const { comp, removeComp, name }: { comp: Comp; removeComp: () => void; name: string } = $props();
+	const {
+		comp,
+		resetSpec,
+		resetComp
+	}: { comp: Comp; resetComp: () => void; resetSpec: (index: number) => void } = $props();
 
 	const isEmptyComp = $derived(comp.length === 0);
 	const compRoles = $derived(compToRoles(comp));
@@ -42,38 +47,23 @@
 </script>
 
 <div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400">
-	<p class="text-center rounded font-semibold">
-		{name}
-	</p>
-	<button
-		onclick={getImage}
-		class="w-48 border-2 border-slate-400 rounded-sm p-2 hover:bg-slate-700"
-	>
-		Get Image
-	</button>
-	<p>
-		<a
-			href={`/comps/${encodeComp(comp)}`}
-			class="w-48 border-2 border-slate-400 rounded-sm p-2 hover:bg-slate-700 text-center mt-2"
-			aria-label="Shareable comp link"
-			target="_blank"
-		>
-			Comp permalink (share)
-		</a>
-	</p>
 	<div class="flex flex-row flex-wrap gap-4 h-max p-8">
 		{#each [...new Array(roles.tank - compRoles.tank.length)]}
 			<EmptySpecDisplay />
 		{/each}
 		{#each [...compRoles.tank].sort(sortByClassSpec) as spec}
-			<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+			<button class="cursor-pointer" onclick={() => resetSpec(comp.indexOf(spec))}>
+				<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+			</button>
 		{/each}
 
 		{#each [...new Array(roles.healer - compRoles.healer.length)]}
 			<EmptySpecDisplay />
 		{/each}
 		{#each [...compRoles.healer].sort(sortByClassSpec) as spec}
-			<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+			<button class="cursor-pointer" onclick={() => resetSpec(comp.indexOf(spec))}>
+				<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+			</button>
 		{/each}
 
 		{#each [...new Array(roles.dps - compRoles.dps.length)]}
@@ -81,12 +71,14 @@
 		{/each}
 
 		{#each [...compRoles.dps].sort(sortByClassSpec) as spec}
-			<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+			<button class="cursor-pointer" onclick={() => resetSpec(comp.indexOf(spec))}>
+				<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+			</button>
 		{/each}
 
 		<button
 			disabled={isEmptyComp}
-			onclick={removeComp}
+			onclick={resetComp}
 			class={clsx(
 				'w-48 border-2',
 				!isEmptyComp
@@ -94,8 +86,14 @@
 					: 'border-slate-400 rounded-sm p-2 hover:bg-slate-700 cursor-not-allowed'
 			)}
 		>
-			Remove
+			Reset
 		</button>
+	</div>
+	<div class="flex flex-row justify-center items-center gap-4">
+		<Button disabled={isEmptyComp} onclick={getImage}>Share comp (png)</Button>
+		<Button disabled={isEmptyComp} target="_blank" href={`/comps/${encodeComp(comp)}`}
+			>Share comp (link)</Button
+		>
 	</div>
 	<div class="flex flex-col items-start p-2">
 		<p class="text-center rounded font-semibold">Comp in numbers</p>
