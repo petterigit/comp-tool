@@ -1,5 +1,6 @@
 <script>
 	let { children } = $props();
+	import '../global.css';
 </script>
 
 <div

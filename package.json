@@ -20,6 +20,7 @@
 		"@iconify/tailwind4": "^1.0.6",
 		"@internationalized/date": "^3.8.2",
 		"@sveltejs/adapter-auto": "^6.0.0",
+		"@sveltejs/adapter-vercel": "^5.7.2",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"bits-ui": "^2.8.10",
@@ -51,5 +52,6 @@
 		"canvas": "^3.1.2",
 		"clsx": "^2.1.1",
 		"tailwindcss": "^4.1.11"
-	}
+	},
+	"packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }
