@@ -39,18 +39,16 @@ export const GET: RequestHandler = async ({ url }) => {
 	const canvas = createCanvas(width, height);
 	const ctx = canvas.getContext('2d');
 
-	// Background
-	ctx.fillStyle = '#222';
-	ctx.fillRect(0, 0, width, height);
-
 	let x = padding;
 	const y = padding;
 
 	const borderRadius = 6;
 	for (const [className, spec] of compSpecs) {
 		try {
-			const imgPath = `static/icons/spec/${className}/${spec}.jpg`;
-			const img = await loadImage(imgPath);
+			const imgPath = `/icons/spec/${className}/${spec}.jpg`;
+			const origin = url.origin || `https://${url.host}`;
+			const imgUrl = `${origin}${imgPath}`;
+			const img = await loadImage(imgUrl);
 			ctx.drawImage(img, x, y, imageSize, imageSize);
 			drawRoundedRect(
 				ctx as unknown as CanvasRenderingContext2D,
