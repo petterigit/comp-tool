@@ -8,6 +8,7 @@
 	import SpecDisplay from './SpecDisplay.svelte';
 	import { page } from '$app/state';
 	import CompDetails from './CompDetails.svelte';
+	import SpecWithFunctions from './SpecWithFunctions.svelte';
 
 	const {
 		comp,
@@ -32,10 +33,10 @@
 			const blob = await compImage.blob();
 			await navigator.clipboard.write([
 				new ClipboardItem({
-					'image/png': blob
+					'image/jpeg': blob
 				})
 			]);
-			alert('Comp image copied to clipboard!');
+			alert('Image copied to clipboard!');
 		} else {
 			alert('Failed to get comp image.');
 		}
@@ -61,69 +62,63 @@
 	<div class="flex flex-col w-max gap-4">
 		<div class="flex flex-row flex-wrap gap-4 h-max">
 			{#each [...new Array(roleAmountsInComp[Role.tank] - compRoles[Role.tank].length)]}
-				<EmptySpecDisplay />
+				<SpecWithFunctions />
 			{/each}
 			{#each [...compRoles[Role.tank]].sort(sortByClassSpec) as spec}
-				<div class="flex flex-col gap-2 items-center">
-					<SpecDisplay size="lg" {spec} />
-					<div class="flex flex-row gap-2">
-						<Button onclick={() => showDetails(spec)}>Show spec details</Button>
-						<Button onclick={() => resetSpec(comp.indexOf(spec))}>Remove</Button>
-					</div>
-				</div>
+				<SpecWithFunctions
+					{spec}
+					showDetails={() => showDetails(spec)}
+					reset={() => resetSpec(comp.indexOf(spec))}
+				/>
 			{/each}
-
 			{#each [...new Array(roleAmountsInComp[Role.healer] - compRoles[Role.healer].length)]}
-				<EmptySpecDisplay />
+				<SpecWithFunctions />
 			{/each}
-
 			{#each [...compRoles[Role.healer]].sort(sortByClassSpec) as spec}
-				<div class="flex flex-col gap-2 items-center">
-					<SpecDisplay size="lg" {spec} />
-					<div class="flex flex-row gap-2">
-						<Button onclick={() => showDetails(spec)}>Show spec details</Button>
-						<Button onclick={() => resetSpec(comp.indexOf(spec))}>Remove</Button>
-					</div>
-				</div>
+				<SpecWithFunctions
+					{spec}
+					showDetails={() => showDetails(spec)}
+					reset={() => resetSpec(comp.indexOf(spec))}
+				/>
 			{/each}
-
 			{#each [...new Array(roleAmountsInComp[Role.dps] - compRoles[Role.dps].length)]}
-				<EmptySpecDisplay />
+				<SpecWithFunctions />
 			{/each}
 
 			{#each [...compRoles[Role.dps]].sort(sortByClassSpec) as spec}
-				<div class="flex flex-col gap-2 items-center">
-					<SpecDisplay size="lg" {spec} />
-					<div class="flex flex-row gap-2">
-						<Button onclick={() => showDetails(spec)}>Show spec details</Button>
-						<Button onclick={() => resetSpec(comp.indexOf(spec))}>Remove</Button>
-					</div>
-				</div>
+				<SpecWithFunctions
+					{spec}
+					showDetails={() => showDetails(spec)}
+					reset={() => resetSpec(comp.indexOf(spec))}
+				/>
 			{/each}
+			<div class="flex flex-row gap-2">
+				<div class="flex flex-col gap-2 justify-evenly">
+					<Button disabled={isEmptyComp} onclick={shareImage}>Share comp as image</Button>
+					<Button disabled={isEmptyComp} onclick={shareLink}>Copy link</Button>
+				</div>
 
-			<button
-				disabled={isEmptyComp}
-				onclick={resetComp}
-				class={clsx(
-					'w-48 border-2',
-					!isEmptyComp
-						? 'border-slate-400 cursor-pointer rounded-sm p-2 hover:bg-slate-700'
-						: 'border-slate-400 rounded-sm p-2 hover:bg-slate-700 cursor-not-allowed'
-				)}
-			>
-				Reset
-			</button>
+				<button
+					disabled={isEmptyComp}
+					onclick={resetComp}
+					class={clsx(
+						'w-48 border-2',
+						!isEmptyComp
+							? 'border-slate-400 cursor-pointer rounded-sm p-2 hover:bg-slate-700'
+							: 'border-slate-400 rounded-sm p-2 hover:bg-slate-700 cursor-not-allowed'
+					)}
+				>
+					Reset
+				</button>
+			</div>
 		</div>
-
-		<Button disabled={isEmptyComp} onclick={shareImage}>Share comp (image)</Button>
-		<Button disabled={isEmptyComp} onclick={shareLink}>Share comp (link)</Button>
 	</div>
 	<div class="border-1 rounded-md p-4 grow">
 		{#if !details}
-			<p class="text-center text-xl">Comp details & stats</p>
+			<p class="text-center text-xl">Comp details & stats (work in progress)</p>
 			<CompDetails {comp} />
 		{:else}
-			<p class="text-center text-xl">Spec details & stats</p>
+			<p class="text-center text-xl">Spec details & stats (work in progress)</p>
 			<SpecDisplay size="lg" spec={details} />
 			<Button
 				onclick={() => {

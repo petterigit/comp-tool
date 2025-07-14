@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { specDetails } from '$lib/util/data';
 	import {
 		filterDamageTypeHybrid,
 		filterDamageTypeMagic,
