@@ -66,10 +66,10 @@ export const GET: RequestHandler = async ({ url }) => {
 		}
 	}
 
-	const buffer = canvas.toBuffer('image/jpeg');
+	const buffer = canvas.toBuffer('image/png');
 	return new Response(buffer, {
 		headers: {
-			'Content-Type': 'image/jpeg',
+			'Content-Type': 'image/png',
 			'Cache-Control': 'public, max-age=3600'
 		}
 	});

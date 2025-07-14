@@ -33,7 +33,7 @@
 			const blob = await compImage.blob();
 			await navigator.clipboard.write([
 				new ClipboardItem({
-					'image/jpeg': blob
+					'image/png': blob
 				})
 			]);
 			alert('Image copied to clipboard!');
