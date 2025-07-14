@@ -1,18 +1,11 @@
 <script lang="ts">
-	import {
-		compToMeleeRangedHealer,
-		compToPhysicalMagicHybrid,
-		compToRoles,
-		encodeComp,
-		roles
-	} from '$lib/util/data';
-	import { sortByClassSpec } from '$lib/util/sort';
-	import type { Comp } from '$lib/util/types';
+	import { compToRoles, encodeComp, roleAmountsInComp } from '$lib/util/data';
+	import { Role, type Comp } from '$lib/util/types';
 	import clsx from 'clsx';
 	import EmptySpecDisplay from './EmptySpecDisplay.svelte';
-	import SpecDisplay from './SpecDisplay.svelte';
-	import ClassPopover from './ClassPopover.svelte';
 	import Button from './ui/button/button.svelte';
+	import { sortByClassSpec } from '$lib/util/sort';
+	import SpecDisplay from './SpecDisplay.svelte';
 
 	const {
 		comp,
@@ -22,13 +15,9 @@
 
 	const isEmptyComp = $derived(comp.length === 0);
 	const compRoles = $derived(compToRoles(comp));
-	const compMeleeRangedHealer = $derived(compToMeleeRangedHealer(comp));
-	const compPhysicalMagicHybrid = $derived(compToPhysicalMagicHybrid(comp));
 
 	async function getImage() {
-		console.log('Get Image');
 		const response = await fetch(`/api/comp-image?comp=${encodeComp(comp)}`);
-		console.log('Response:', response);
 		const compImage = await response;
 
 		// Copy comp image to clipboard
@@ -48,31 +37,32 @@
 
 <div class="flex flex-col w-max gap-4 bg-slate-900 rounded-md border-2 border-slate-400 p-8">
 	<div class="flex flex-row flex-wrap gap-4 h-max">
-		{#each [...new Array(roles.tank - compRoles.tank.length)]}
+		{#each [...new Array(roleAmountsInComp[Role.tank] - compRoles[Role.tank].length)]}
 			<EmptySpecDisplay />
 		{/each}
-		{#each [...compRoles.tank].sort(sortByClassSpec) as spec}
+		{#each [...compRoles[Role.tank]].sort(sortByClassSpec) as spec}
 			<button class="cursor-pointer" onclick={() => resetSpec(comp.indexOf(spec))}>
-				<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+				<SpecDisplay size="lg" {spec} />
 			</button>
 		{/each}
 
-		{#each [...new Array(roles.healer - compRoles.healer.length)]}
+		{#each [...new Array(roleAmountsInComp[Role.healer] - compRoles[Role.healer].length)]}
 			<EmptySpecDisplay />
 		{/each}
-		{#each [...compRoles.healer].sort(sortByClassSpec) as spec}
+
+		{#each [...compRoles[Role.healer]].sort(sortByClassSpec) as spec}
 			<button class="cursor-pointer" onclick={() => resetSpec(comp.indexOf(spec))}>
-				<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+				<SpecDisplay size="lg" {spec} />
 			</button>
 		{/each}
 
-		{#each [...new Array(roles.dps - compRoles.dps.length)]}
+		{#each [...new Array(roleAmountsInComp[Role.dps] - compRoles[Role.dps].length)]}
 			<EmptySpecDisplay />
 		{/each}
 
-		{#each [...compRoles.dps].sort(sortByClassSpec) as spec}
+		{#each [...compRoles[Role.dps]].sort(sortByClassSpec) as spec}
 			<button class="cursor-pointer" onclick={() => resetSpec(comp.indexOf(spec))}>
-				<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+				<SpecDisplay size="lg" {spec} />
 			</button>
 		{/each}
 
@@ -90,52 +80,9 @@
 		</button>
 	</div>
 	<div class="flex flex-row justify-center items-center gap-4">
-		<Button disabled={isEmptyComp} onclick={getImage}>Share comp (png)</Button>
+		<Button disabled={isEmptyComp} onclick={getImage}>Share comp (image)</Button>
 		<Button disabled={isEmptyComp} target="_blank" href={`/comps/${encodeComp(comp)}`}
 			>Share comp (link)</Button
 		>
 	</div>
-	<!--
-	<div class="flex flex-col items-start p-2">
-		<p class="text-center rounded font-semibold">Comp in numbers</p>
-
-		<ClassPopover
-			specs={[
-				['warrior', 'protection'],
-				['paladin', 'protection'],
-				['druid', 'guardian']
-			]}
-		>
-			<p>
-				{compRoles.tank.length} Tanks, {compRoles.healer.length} Healers, {compRoles.dps.length} DPS
-			</p>
-		</ClassPopover>
-		<ClassPopover
-			specs={[
-				['warrior', 'protection'],
-				['paladin', 'protection'],
-				['druid', 'guardian']
-			]}
-		>
-			<p>
-				{compMeleeRangedHealer.melee.length} Melee, {compMeleeRangedHealer.ranged.length} Ranged ({compMeleeRangedHealer
-					.healer.length} Healer)
-			</p>
-		</ClassPopover>
-		<ClassPopover
-			specs={[
-				['warrior', 'protection'],
-				['paladin', 'protection'],
-				['druid', 'guardian']
-			]}
-		>
-			<p>
-				{compPhysicalMagicHybrid.physical.length} Physical, {compPhysicalMagicHybrid.hybrid.length} Hybrid,
-				{compPhysicalMagicHybrid.magic.length}
-				Magic
-			</p>
-		</ClassPopover>
-	</div>
-	
-	-->
 </div>

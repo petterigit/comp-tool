@@ -1,25 +1,35 @@
-import { roleOrder } from '$lib/util/data';
-import type { ClassSpec, ClassSpecRole } from './types';
+import { roleOrder, specDetails } from '$lib/util/data';
+import type { Spec } from './types';
 
-export const sortByRoleClassSpec = (a: ClassSpecRole, b: ClassSpecRole) => {
-	// Sort by role
-	const roleDiff = roleOrder[a[2]] - roleOrder[b[2]];
+export const sortByRoleClassSpec = (a: Spec, b: Spec) => {
+	const detailsA = specDetails[a];
+	const detailsB = specDetails[b];
+
+	// Role
+	const roleDiff = roleOrder[detailsA.role] - roleOrder[detailsB.role];
 	if (roleDiff !== 0) return roleDiff;
-	// Then by class
-	if (a[0] < b[0]) return -1;
-	if (a[0] > b[0]) return 1;
-	// Then by spec
-	if (a[1] < b[1]) return -1;
-	if (a[1] > b[1]) return 1;
+
+	// Class name
+	if (detailsA.class < detailsB.class) return -1;
+	if (detailsA.class > detailsB.class) return 1;
+
+	// Spec name
+	if (a < b) return -1;
+	if (a > b) return 1;
 	return 0;
 };
 
-export const sortByClassSpec = (a: ClassSpec, b: ClassSpec) => {
-	// Sort by class
-	if (a[0] < b[0]) return -1;
-	if (a[0] > b[0]) return 1;
-	// Sort by role
-	if (a[1] < b[1]) return -1;
-	if (a[1] > b[1]) return 1;
+export const sortByClassSpec = (a: Spec, b: Spec) => {
+	const detailsA = specDetails[a];
+	const detailsB = specDetails[b];
+
+	// Class
+	if (detailsA.class < detailsB.class) return -1;
+	if (detailsA.class > detailsB.class) return 1;
+
+	// Spec
+	if (a < b) return -1;
+	if (a > b) return 1;
+
 	return 0;
 };

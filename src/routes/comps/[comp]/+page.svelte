@@ -1,21 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { decodeComp } from '$lib/util/data';
+	import { compToRoles, decodeComp, specDetails } from '$lib/util/data';
 	import SpecDisplay from '$lib/components/SpecDisplay.svelte';
-	import { compToRoles } from '$lib/util/data';
 	import { sortByClassSpec } from '$lib/util/sort';
+	import { Role } from '$lib/util/types';
 
 	const encodedComp = $page.params.comp;
 	const comp = decodeComp(encodedComp).sort(sortByClassSpec);
 	const compRoles = compToRoles(comp);
-	const compSpecs = $derived(
-		Object.values(compRoles)
-			.flat()
-			.map((spec) => spec[1])
-			.join(' - ')
-	);
 	const pageUrl = $page.url.toString();
 	const pageHost = $page.url.host;
+	const compSpecs = comp.join(' - ');
+	const tanks = comp.filter((spec) => specDetails[spec].role === Role.tank);
+	const healers = comp.filter((spec) => specDetails[spec].role === Role.healer);
+	const dps = comp.filter((spec) => specDetails[spec].role === Role.dps);
 </script>
 
 <svelte:head>
@@ -44,15 +42,15 @@
 </svelte:head>
 
 <div class="flex flex-row flex-wrap gap-4 h-max p-8">
-	{#each [...compRoles.tank] as spec}
-		<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+	{#each tanks as spec}
+		<SpecDisplay size="lg" {spec} />
 	{/each}
 
-	{#each [...compRoles.healer] as spec}
-		<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+	{#each healers as spec}
+		<SpecDisplay size="lg" {spec} />
 	{/each}
 
-	{#each [...compRoles.dps] as spec}
-		<SpecDisplay size="lg" className={spec[0]} spec={spec[1]} />
+	{#each dps as spec}
+		<SpecDisplay size="lg" {spec} />
 	{/each}
 </div>

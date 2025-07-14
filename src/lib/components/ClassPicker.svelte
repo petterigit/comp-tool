@@ -1,45 +1,43 @@
 <script lang="ts">
-	import { classes, classSpecToClassSpecRole, getRole, roles } from '$lib/util/data';
-	import type { Class, ClassSpec, ClassSpecRole, Role, Spec } from '$lib/util/types';
+	import { classDetails, compToRoles, roleAmountsInComp, specDetails } from '$lib/util/data';
+	import { Class, Spec } from '$lib/util/types';
 	import clsx from 'clsx';
 	import SpecDisplay from './SpecDisplay.svelte';
 	import { sortByRoleClassSpec } from '$lib/util/sort';
 
 	let {
 		pickSpec,
-		rolesPicked
+		specsPicked
 	}: {
-		pickSpec: (className: Class, spec: Spec) => void;
-		rolesPicked: { [key in Role]: number };
+		pickSpec: (spec: Spec) => void;
+		specsPicked: Spec[];
 	} = $props();
 
-	const roleFull = (spec: ClassSpecRole) => {
-		return rolesPicked[spec[2]] < roles[spec[2]];
+	const roles = $derived(compToRoles(specsPicked));
+
+	const roleFull = (spec: Spec) => {
+		const role = specDetails[spec].role;
+		const picked = roles[role].length;
+		return picked < roleAmountsInComp[role];
 	};
 </script>
 
 <div class="flex flex-col gap-4">
 	<div class="flex flex-row gap-4 flex-wrap">
-		{#each Object.entries(classes).filter((classSpec) => classSpec[1].length >= 1) as classSpec}
-			<div class="flex flex-row border-2 bg-slate-900 rounded-md border-{classSpec[0]}">
-				{#each Object.values(classSpec[1])
-					.map((spec) => classSpecToClassSpecRole([classSpec[0] as Class, spec]))
-					.sort(sortByRoleClassSpec) as classSpecRole}
+		{#each Object.values(Class) as className}
+			<div class="flex flex-row border-2 bg-slate-900 rounded-md border-{className}">
+				{#each classDetails[className].specs.sort(sortByRoleClassSpec) as spec}
 					<button
-						disabled={!roleFull(classSpecRole)}
+						disabled={!roleFull(spec)}
 						class={clsx(
 							'p-2',
-							roleFull(classSpecRole) &&
+							roleFull(spec) &&
 								'cursor-pointer outline-slate-500 hover:brightness-150 hover:outline-slate-500',
-							!roleFull(classSpecRole) && 'outline-slate-700 brightness-50 '
+							!roleFull(spec) && 'outline-slate-700 brightness-50 '
 						)}
-						onclick={() => pickSpec(classSpec[0] as Class, classSpecRole[1] as Spec)}
+						onclick={() => pickSpec(spec)}
 					>
-						<SpecDisplay
-							hideClassBorder
-							className={classSpec[0] as Class}
-							spec={classSpecRole[1] as Spec}
-						/>
+						<SpecDisplay hideClassBorder {spec} />
 					</button>
 				{/each}
 			</div>

@@ -1,6 +1,6 @@
 import { createCanvas, loadImage } from '@napi-rs/canvas';
 import type { RequestHandler } from '@sveltejs/kit';
-import { classColors, compToRoles, decodeComp } from '$lib/util/data';
+import { classDetails, decodeComp, specDetails } from '$lib/util/data';
 import { sortByClassSpec } from '$lib/util/sort';
 
 /**
@@ -9,20 +9,18 @@ import { sortByClassSpec } from '$lib/util/sort';
  * @returns
  */
 export const GET: RequestHandler = async ({ url }) => {
-	const comp = url.searchParams.get('comp');
-	if (!comp) {
+	const compEncoded = url.searchParams.get('comp');
+	if (!compEncoded) {
 		return new Response('Missing params', { status: 400 });
 	}
 
-	const decoded = decodeComp(comp).sort(sortByClassSpec);
-	const compRoles = compToRoles(decoded);
-	const compSpecs = Object.values(compRoles).flat();
+	const comp = decodeComp(compEncoded).sort(sortByClassSpec);
 
-	if (compSpecs.length === 0) {
+	if (comp.length === 0) {
 		return new Response('Could not read comp', { status: 404 });
 	}
 
-	const specsCount = compSpecs.length;
+	const specsCount = comp.length;
 	const gap = 5;
 	const padding = 10;
 	const imageSize = 56;
@@ -30,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	const width =
 		padding +
-		imageSize * compSpecs.length +
+		imageSize * specsCount +
 		gap * (specsCount - 1) +
 		borderWidth * specsCount * 2 +
 		padding;
@@ -43,9 +41,9 @@ export const GET: RequestHandler = async ({ url }) => {
 	const y = padding;
 
 	const borderRadius = 6;
-	for (const [className, spec] of compSpecs) {
+	for (const spec of comp) {
 		try {
-			const imgPath = `/icons/spec/${className}/${spec}.jpg`;
+			const imgPath = `/icons/spec/${spec}.jpg`;
 			const origin = url.origin || `https://${url.host}`;
 			const imgUrl = `${origin}${imgPath}`;
 			const img = await loadImage(imgUrl);
@@ -57,14 +55,14 @@ export const GET: RequestHandler = async ({ url }) => {
 				imageSize + borderWidth,
 				imageSize + borderWidth,
 				borderRadius,
-				classColors[className] ?? '#fff',
+				classDetails[specDetails[spec].class].color ?? '#fff',
 				borderWidth
 			);
 			ctx.restore();
 
 			x += imageSize + padding + borderWidth;
 		} catch (e) {
-			console.error(`Failed to load image for ${className}/${spec}:`, e);
+			console.error(`Failed to load image for ${spec}:`, e);
 		}
 	}
 

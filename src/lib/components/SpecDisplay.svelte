@@ -1,14 +1,16 @@
 <script lang="ts">
+	import { specDetails } from '$lib/util/data';
 	import type { Class, Spec } from '$lib/util/types';
 	import clsx from 'clsx';
 
 	let {
-		className,
 		spec,
 		size,
 		hideClassBorder
-	}: { className: Class; spec: Spec; size?: 'sm' | 'md' | 'lg'; hideClassBorder?: boolean } =
-		$props();
+	}: { spec: Spec; size?: 'sm' | 'md' | 'lg'; hideClassBorder?: boolean } = $props();
+
+	const className = $derived(specDetails[spec].class);
+
 	const sizeClass = $derived(
 		{
 			sm: 'w-8 h-8',
@@ -42,6 +44,6 @@
 		'rounded-xs',
 		!hideClassBorder ? `outline-${className}` : 'outline-black'
 	)}
-	src={`/icons/spec/${className}/${spec}.jpg`}
+	src={`/icons/spec/${spec}.jpg`}
 	alt={spec}
 />

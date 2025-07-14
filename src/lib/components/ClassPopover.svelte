@@ -1,9 +1,9 @@
 <script lang="ts">
 	import * as Popover from '$lib/components/ui/popover/index.js';
-	import type { ClassSpec } from '$lib/util/types';
+	import type { Spec } from '$lib/util/types';
 	import SpecDisplay from './SpecDisplay.svelte';
 
-	const { children, specs }: { children: any; specs: ClassSpec[] } = $props();
+	const { children, specs }: { children: any; specs: Spec[] } = $props();
 </script>
 
 <Popover.Root>
@@ -16,11 +16,11 @@
 		</span>
 	</Popover.Trigger>
 	<Popover.Content>
-		{#each specs as classSpec}
+		{#each specs as spec}
 			<div class="flex flex-row gap-2">
-				<SpecDisplay size="sm" className={classSpec[0]} spec={classSpec[1]} />
+				<SpecDisplay size="sm" {spec} />
 				<p class="text-sm text-slate-300">
-					{classSpec[1]}
+					{spec}
 				</p>
 			</div>
 		{/each}
