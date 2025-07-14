@@ -1,4 +1,12 @@
-import { Class, Spec, Role, type Comp, type SpecDetails, type ClassDetails } from './types';
+import {
+	Class,
+	Spec,
+	Role,
+	type Comp,
+	type ClassDetails,
+	type SpecDetails,
+	DamageType
+} from './types';
 
 // Create Spec <-> index mappings for encoding/decoding
 const specList = Object.values(Spec);
@@ -132,158 +140,197 @@ export const classDetails: { [key in Class]: ClassDetails } = {
 export const specDetails: { [key in Spec]: SpecDetails } = {
 	[Spec.druid_feral]: {
 		role: Role.dps,
-		class: Class.druid
+		class: Class.druid,
+		damageType: DamageType.physical
 	},
 	[Spec.druid_guardian]: {
 		role: Role.tank,
-		class: Class.druid
+		class: Class.druid,
+		damageType: DamageType.physical
 	},
 	[Spec.druid_balance]: {
 		role: Role.dps,
-		class: Class.druid
+		class: Class.druid,
+		damageType: DamageType.magic
 	},
 	[Spec.druid_restoration]: {
 		role: Role.healer,
-		class: Class.druid
+		class: Class.druid,
+		damageType: DamageType.physical
 	},
 	[Spec.deathknight_blood]: {
 		role: Role.tank,
-		class: Class.deathknight
+		class: Class.deathknight,
+		damageType: DamageType.physical
 	},
 	[Spec.deathknight_frost]: {
 		role: Role.dps,
-		class: Class.deathknight
+		class: Class.deathknight,
+		damageType: DamageType.magic
 	},
 	[Spec.deathknight_unholy]: {
 		role: Role.dps,
-		class: Class.deathknight
+		class: Class.deathknight,
+		damageType: DamageType.hybrid
 	},
 	[Spec.demonhunter_havoc]: {
 		role: Role.dps,
-		class: Class.demonhunter
+		class: Class.demonhunter,
+		damageType: DamageType.magic
 	},
 	[Spec.demonhunter_vengeance]: {
 		role: Role.tank,
-		class: Class.demonhunter
+		class: Class.demonhunter,
+		damageType: DamageType.magic
 	},
 	[Spec.evoker_devastation]: {
 		role: Role.dps,
-		class: Class.evoker
+		class: Class.evoker,
+		damageType: DamageType.magic
 	},
 	[Spec.evoker_preservation]: {
 		role: Role.healer,
-		class: Class.evoker
+		class: Class.evoker,
+		damageType: DamageType.magic
 	},
 	[Spec.evoker_augmentation]: {
 		role: Role.dps,
-		class: Class.evoker
+		class: Class.evoker,
+		damageType: DamageType.magic
 	},
 	[Spec.hunter_beastmastery]: {
 		role: Role.dps,
-		class: Class.hunter
+		class: Class.hunter,
+		damageType: DamageType.physical
 	},
 	[Spec.hunter_marksmanship]: {
 		role: Role.dps,
-		class: Class.hunter
+		class: Class.hunter,
+		damageType: DamageType.physical
 	},
 	[Spec.hunter_survival]: {
 		role: Role.dps,
-		class: Class.hunter
+		class: Class.hunter,
+		damageType: DamageType.hybrid
 	},
 	[Spec.mage_arcane]: {
 		role: Role.dps,
-		class: Class.mage
+		class: Class.mage,
+		damageType: DamageType.magic
 	},
 	[Spec.mage_fire]: {
 		role: Role.dps,
-		class: Class.mage
+		class: Class.mage,
+		damageType: DamageType.magic
 	},
 	[Spec.mage_frost]: {
 		role: Role.dps,
-		class: Class.mage
+		class: Class.mage,
+		damageType: DamageType.magic
 	},
 	[Spec.monk_brewmaster]: {
 		role: Role.tank,
-		class: Class.monk
+		class: Class.monk,
+		damageType: DamageType.physical
 	},
 	[Spec.monk_mistweaver]: {
 		role: Role.healer,
-		class: Class.monk
+		class: Class.monk,
+		damageType: DamageType.physical
 	},
 	[Spec.monk_windwalker]: {
 		role: Role.dps,
-		class: Class.monk
+		class: Class.monk,
+		damageType: DamageType.hybrid
 	},
 	[Spec.paladin_holy]: {
 		role: Role.healer,
-		class: Class.paladin
+		class: Class.paladin,
+		damageType: DamageType.magic
 	},
 	[Spec.paladin_protection]: {
 		role: Role.tank,
-		class: Class.paladin
+		class: Class.paladin,
+		damageType: DamageType.magic
 	},
 	[Spec.paladin_retribution]: {
 		role: Role.dps,
-		class: Class.paladin
+		class: Class.paladin,
+		damageType: DamageType.hybrid
 	},
 	[Spec.priest_discipline]: {
 		role: Role.healer,
-		class: Class.priest
+		class: Class.priest,
+		damageType: DamageType.magic
 	},
 	[Spec.priest_holy]: {
 		role: Role.healer,
-		class: Class.priest
+		class: Class.priest,
+		damageType: DamageType.magic
 	},
 	[Spec.priest_shadow]: {
 		role: Role.dps,
-		class: Class.priest
+		class: Class.priest,
+		damageType: DamageType.magic
 	},
 	[Spec.rogue_assassination]: {
 		role: Role.dps,
-		class: Class.rogue
+		class: Class.rogue,
+		damageType: DamageType.hybrid
 	},
 	[Spec.rogue_outlaw]: {
 		role: Role.dps,
-		class: Class.rogue
+		class: Class.rogue,
+		damageType: DamageType.magic
 	},
 	[Spec.rogue_subtlety]: {
 		role: Role.dps,
-		class: Class.rogue
+		class: Class.rogue,
+		damageType: DamageType.magic
 	},
 	[Spec.shaman_elemental]: {
 		role: Role.dps,
-		class: Class.shaman
+		class: Class.shaman,
+		damageType: DamageType.magic
 	},
 	[Spec.shaman_enhancement]: {
 		role: Role.dps,
-		class: Class.shaman
+		class: Class.shaman,
+		damageType: DamageType.magic
 	},
 	[Spec.shaman_restoration]: {
 		role: Role.healer,
-		class: Class.shaman
+		class: Class.shaman,
+		damageType: DamageType.magic
 	},
 	[Spec.warlock_affliction]: {
 		role: Role.dps,
-		class: Class.warlock
+		class: Class.warlock,
+		damageType: DamageType.magic
 	},
 	[Spec.warlock_demonology]: {
 		role: Role.dps,
-		class: Class.warlock
+		class: Class.warlock,
+		damageType: DamageType.magic
 	},
 	[Spec.warlock_destruction]: {
 		role: Role.dps,
-		class: Class.warlock
+		class: Class.warlock,
+		damageType: DamageType.magic
 	},
 	[Spec.warrior_arms]: {
 		role: Role.dps,
-		class: Class.warrior
+		class: Class.warrior,
+		damageType: DamageType.physical
 	},
 	[Spec.warrior_fury]: {
 		role: Role.dps,
-		class: Class.warrior
+		class: Class.warrior,
+		damageType: DamageType.physical
 	},
 	[Spec.warrior_protection]: {
 		role: Role.tank,
-		class: Class.warrior
+		class: Class.warrior,
+		damageType: DamageType.physical
 	}
 };

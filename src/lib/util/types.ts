@@ -62,6 +62,12 @@ export enum Role {
 	'dps'
 }
 
+export enum DamageType {
+	'hybrid',
+	'magic',
+	'physical'
+}
+
 export type ClassSpecDict = {
 	[key in Class]: Spec[];
 };
@@ -74,6 +80,7 @@ export interface ClassDetails {
 export interface SpecDetails {
 	role: Role;
 	class: Class;
+	damageType: DamageType;
 }
 
 export type Comp = Spec[];

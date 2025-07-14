@@ -7,7 +7,6 @@
 
 	const encodedComp = $page.params.comp;
 	const comp = decodeComp(encodedComp).sort(sortByClassSpec);
-	const compRoles = compToRoles(comp);
 	const pageUrl = $page.url.toString();
 	const pageHost = $page.url.host;
 	const compSpecs = comp.join(' - ');
